@@ -1,11 +1,13 @@
 import requests
 import re
+## Importando a biblioteca requests para fazer requisições HTTP e obter o conteúdo HTML de um site.
+## Importando a biblioteca re para trabalhar com expressões regulares.
 
-url = "exemplo.com"  # Substitua pelo URL do site que deseja analisar
+url = "https://www.exemplo.com"  # Substitua pelo URL do site que deseja analisar
 response = requests.get(url)
 html_content = response.text
 
-pattern = r'<(h[1-2])[^>]*>(.*?)<\/(h[1-2])>'
+pattern = r'<(h[1|2])[^>]*>(.*?)<\/\1>'
 
 headings = re.findall(pattern, html_content, re.DOTALL)
 for heading in headings:
@@ -13,7 +15,7 @@ for heading in headings:
 
     
 # Regex usada:
-# pattern = r'<(h[1-2])[^>]*>(.*?)<\/(h[1-2])>'
+# pattern = r'<(h[1-2])[^>]*>(.*?)<\/\1>'
 
 # <(h[1-2])
 #   Corresponde à abertura de uma tag de heading.
@@ -34,8 +36,8 @@ for heading in headings:
 #   - ?   torna a correspondência não gananciosa (lazy),
 #         ou seja, captura o menor trecho possível até a próxima parte da regex.
 
-# <\/(h[1-2])>
+# <\/\1>
 #   Corresponde à tag de fechamento do heading.
 #   - <\/  indica o início da tag de fechamento. Usamos '\' para pegar o literal da barra '/'.
-#   - (h[1-2]) captura novamente h1 ou h2 (grupo 3).
+#   - \1  refere-se ao valor capturado no primeiro grupo (h[1-2]).
 #   Isso garante que estamos fechando um heading do mesmo tipo.
