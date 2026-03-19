@@ -1,7 +1,9 @@
 import requests
 import re
+## Importando a biblioteca requests para fazer requisições HTTP e obter o conteúdo HTML de um site.
+## Importando a biblioteca re para trabalhar com expressões regulares.
 
-url = "exemplo.com"  # Substitua pelo URL do site que deseja analisar
+url = "https://www.exemplo.com"  # Substitua pelo URL do site que deseja analisar
 response = requests.get(url)
 html_content = response.text
 
