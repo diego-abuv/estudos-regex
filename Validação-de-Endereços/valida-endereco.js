@@ -1,26 +1,30 @@
 const fs = require('fs')
+
 const enderecosCsv = './Validação-de-Endereços/enderecos.csv'
 const enderecos = fs.readFileSync(enderecosCsv, "utf-8")
 
-const regexEndereco = /^(.*[A-Za-zÀ-ÿ])(, )(\d.*)\2(CEP (\d{5}-\d{3}))/gm
+const linhas = enderecos.split(/\r?\n/);
+
+// Regex separadas
+const regexMatch = /^(.*[A-Za-zÀ-ÿ])(, )(\d.*)\2(CEP (\d{5}-\d{3}))$/gm;
+const regexTest = /^(.*[A-Za-zÀ-ÿ])(, )(\d.*)\2(CEP (\d{5}-\d{3}))$/; // Usada na função .test() para validar cada linha individualmente, não precisa das flags 'g' e 'm' porque será testada linha por linha
+
 /*
-    Explicação da regex:
-    - ^: Início da linha
+    Explicação das regex:
+    - ^: Início da string
     - (.*[A-Za-zÀ-ÿ]): Captura o nome da rua (qualquer caractere seguido por uma letra)
     - (, ): Captura a vírgula e o espaço
     - (\d.*): Captura o número do endereço
-    - \2: Referência à segunda captura (a vírgula e o espaço)
-    - (CEP (\d{5}-\d{3})): Captura o CEP no formato 12345-678 (5 digitos, hífen, 3 dígitos)
-    - $: Fim da linha
+    - \2: Referência ao segundo grupo de captura (a vírgula e o espaço)
+    - (CEP (\d{5}-\d{3})): Captura "CEP" formato XXXXX-XXX (5 digitos, hífen, 3 dígitos)
+    - $: Fim da string
+    - g: Flag para buscar todas as ocorrências
+    - m: Flag para tratar a string como múltiplas linhas
 */
 
-const linhas = enderecos.split('\n'); // Divide o conteúdo do arquivo em linhas
+const enderecosCorretos = enderecos.match(regexMatch) // Usa match para encontrar todos os endereços que correspondem à regex (endereços corretos)
 
-// Encontra os endereços corretos usando a regex
-const enderecosCorretos = enderecos.match(regexEndereco)
-console.log('Endereços encontrados: ', enderecosCorretos)
+const invalidos = linhas.filter(linha => !regexTest.test(linha)); // Encontra os endereços inválidos usando filter e testa cada linha com a regex (se a linha não corresponder à regex, é considerada inválida)
 
-// Encontra os endereços inválidos usando filter e testa cada linha com a regex (se a linha não corresponder à regex, é considerada inválida)
-const invalidos = linhas.filter(linha => !regexEndereco.test(linha));
-console.log('Endereços inválidos: ', invalidos)
-
+console.log('Endereços encontrados:', enderecosCorretos)
+console.log('Endereços inválidos:', invalidos)
